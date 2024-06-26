@@ -1,0 +1,78 @@
+---
+title: "Assignment1_advr"
+author: "Prakhar Tayal 23205401"
+format: pdf
+---
+
+## Assignment 1
+
+Setting up the required libraries for usage
+
+```{r}
+#| warning: false
+#setup 
+library("tidyverse")
+library("data.table")
+library("ggplot2")
+library("Hmisc")
+```
+
+Loading our data using data.table package
+
+```{r}
+data_jpn= fread("hdro_indicators_jpn.csv")
+data_uga = fread("hdro_indicators_uga.csv")
+```
+
+```{r}
+str(data_jpn)
+
+```
+
+Making the year and value columns into numeric values
+
+```{data_jpn$value=as.numeric(data_jpn$value)}
+data_jpn$year=as.numeric(data_jpn$year)
+
+```
+
+Combining the 2 Dataframes into one
+
+```{r}
+data= rbind(data_jpn,data_uga)
+
+
+```
+
+Checking for NA values in the data
+
+```{r}
+print(sum(is.na(data)))
+```
+
+Using the describe function for a quick understanding of the data
+
+```{r}
+describe(data)
+```
+
+```{r }
+#| eval: False
+data_jpn=data_jpn[-1,]
+
+data_jpn_n= data_jpn[,sum(data_jpn$value) & data_jpn$year,by=index_id]
+```
+
+```{r}
+#| eval: false
+
+ggplot(data_jpn_n, aes(x = year, y = value, color = index_name)) +
+  geom_line() +
+  geom_point()+
+  facet_wrap(~ index_name, scales = "free_y") +
+  labs(title = "Time Series of Different Human Development Indexes for Japan",
+       x = "Year",
+       y = "Value") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
